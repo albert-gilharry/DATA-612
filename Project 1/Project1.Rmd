@@ -1,0 +1,259 @@
+---
+title: "DATA 612 Project I: Global Baseline Predictors and RMSE"
+author: "Albert Gilharry"
+date: "June 5, 2019"
+output: 
+  html_document:
+    css: ./css.css
+    highlight: pygments
+    theme: cerulean
+    pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Intro
+
+
+
+<br />
+
+## Load Packages
+
+```{r warning=FALSE, message=FALSE}
+library("httr")
+library("randomNames")
+library("dplyr")
+```
+
+1. Briefly describe the recommender system that you're going to build out from a businessperspective, e.g. "This system recommends data science books to readers."
+
+<div id = "solution">
+This system recommends movies to users.
+</div>
+
+2. Find a dataset, or build out your own toy dataset. As a minimum requirement for complexity, please include numeric ratings for at least five users, across at least five items, with some missing data.
+
+<div id = "solution">
+The movies were pulled from TMDb's API at https://www.themoviedb.org/. User names were generated using the `randNames` package. The rating for each user-movie combination were assigned randomly.
+</div>
+
+3. Load your data into (for example) an R or pandas dataframe, a Python dictionary or list of lists, (or another data structure of your choosing). From there, create a user-item matrix.
+
+<div id = "solution">
+
+```{r}
+  # set random seed for reproducibility
+  set.seed(100)
+  num_users = 10
+  users <- randomNames(num_users)
+  data <-  data.frame(user = paste0(users, " "))
+  
+  # pull movies from API
+  link <- "https://api.themoviedb.org/3/discover/movie?api_key=53b3abb279c64aa6b8bd31cedf177293&language=en-US&include_adult=false&primary_release_year=2017&sort_by=vote_average.desc"
+  num_movies <- 10
+  request_movies <- GET(link)
+  
+ 
+  my_movies <- content(request_movies, "parsed")
+  movies <- my_movies$results
+ 
+  # randomly asign ratings
+  if(length(my_movies$results) < num_movies){
+    message("Movies not available. I suggest using the movies database as is.")
+  } else {
+    a <- 1
+    while(a <= num_movies){
+      data[movies[[a]]$title] <- sample( c(0,1,2,3,4,5), num_users, replace = TRUE)
+      a <- a + 1
+    }
+  }
+
+# create user-item matrix
+user_matrix <- as.matrix(select(data, -user))
+movies_list <- colnames(user_matrix)
+```
+
+**Movies**
+ 
+```{r}
+movies_list
+```
+
+**Users**
+ 
+```{r}
+users
+```
+
+**User-item Matrix**
+ 
+```{r}
+colnames(user_matrix) <- seq( 1, 10 )
+user_matrix
+```
+
+</div>
+
+<br />
+
+4. Break your ratings into separate training and test datasets.
+
+<div id = "solution">
+
+Two non-missing ratings for each item was randomly withheld for the test set, the remainder was used as the training set. Missing/ignored ratings are denoted with a  `0`.
+
+```{r}
+train <- user_matrix
+test <- user_matrix
+# randomly sample 2 valid ratings for each item
+for(i in 1:num_movies ){
+  valid_rate <- sample(which(user_matrix[,i] != 0), 2, replace = FALSE)
+  test[-valid_rate,i] = 0
+  train[valid_rate,i] = 0
+}
+```
+
+**Training Set**
+
+```{r}
+train
+```
+
+**Test Set**
+```{r}
+test
+```
+
+</div>
+
+
+5. Using your training data, calculate the raw average (mean) rating for every user-item combination.
+
+<div id = "solution">
+
+**Raw Mean**
+
+```{r}
+raw_mean <- round( mean( train[which(train != 0)] ), 4 )
+
+paste0("The raw average is ", raw_mean )
+```
+</div>
+
+
+6. Calculate the RMSE for raw average for both your training data and your test data.
+
+<div id = "solution">
+
+**Train**
+
+```{r}
+# calculate raw average RMSE for training set
+training_size <- length(train[which(train != 0)])
+raw_rmse_train <-  sqrt(sum((train[which(train != 0)] - raw_mean)^2)/training_size)
+paste0("The training set RMSE based on raw average is ", round(raw_rmse_train, 4 ) )
+```
+
+**Test**
+
+```{r}
+# calculate raw average RMSE for test set
+test_size <- length(test[which(test != 0)])
+raw_rmse_test <-  sqrt(sum((test[which(test != 0)] - raw_mean)^2)/test_size)
+paste0("The test set RMSE based on raw average is ", round(raw_rmse_test, 4) )
+```
+</div>
+
+
+7. Using your training data, calculate the bias for each user and each item.
+
+<div id = "solution">
+
+**User Bias**
+
+```{r}
+# initialize bias vector
+user_bias <- rep(0, num_users)
+
+# calculate bias
+for(i in 1:num_users){
+ user_bias[i] <- round( mean(train[i, which(train[i,] != 0)]), 4) - raw_mean
+}
+
+user_bias_df <- data.frame(User = data$user, Bias = user_bias)
+user_bias_df
+```
+
+**Item Bias**
+
+```{r}
+# initialize bias vector
+item_bias <- rep(0, num_movies)
+
+# calculate bias
+for(i in 1:num_movies){
+ item_bias[i] <- round( mean(train[ which(train[,i] != 0), i]), 4) - raw_mean
+}
+
+item_bias_df <- data.frame(Item = colnames(train), Bias = item_bias)
+item_bias_df
+```
+
+</div> 
+
+
+8. From the raw average, and the appropriate user and item biases, calculate the baseline predictorsfor every user-item combination.
+
+<div id = "solution">
+
+**Baseline Predictions**
+
+```{r}
+# initialize baseline vector
+baseline_predictors <- train
+
+for(user in 1:num_users){
+  for(item in 1:num_movies){
+    baseline_predictors[user, item] <- raw_mean + user_bias[user] + item_bias[item]
+  }
+}
+
+# ratings must be between 1 and 5 inclusive
+baseline_predictors[which(baseline_predictors > 5)] = 5
+baseline_predictors[which(baseline_predictors < 1)] = 1
+
+baseline_predictors
+```
+
+</div>
+
+9. Calculate the RMSE for the baseline predictors for both your training data and your test data.
+
+<div id = "solution">
+
+**Baseline Predictions RMSE**
+
+### Train
+
+```{r}
+baseline_rmse_train <-  sqrt(sum((train[which(train != 0)] - baseline_predictors[which(train != 0)])^2)/training_size)
+paste0("The training set RMSE based on baseline predictors is ", round(baseline_rmse_train, 4) )
+```
+
+### Test
+
+```{r}
+baseline_rmse_test <-  sqrt(sum((test[which(test != 0)] - baseline_predictors[which(test != 0)])^2)/test_size)
+paste0("The test set RMSE based on baseline predictors is ", round(baseline_rmse_test, 4) )
+```
+</div>
+
+<br />
+
+10. Summarize your results.
+
+<div id = "solution">
+The data set has a raw average of 2.8507 that produced RMSEs of 1.4584 and 1.3972 on training and test sets respectively. Straingely but not surprisingly the RMSE on the test set is better than the training set. This is usually an indication that improvements can be made to capture the variability within the data. Calculating and integrating the biases of the users and items into the model may be one approach to improve the model. This new approach resulted in RMSEs of 1.2029 and 1.4788 on the the training and test sets respectively. The new model did a much improved job on the training set but the test set performance reduced slightly. However, one would expect the model based on the biases to generalize better than the model based only on the raw average.
+</div>
