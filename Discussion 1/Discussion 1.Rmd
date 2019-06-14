@@ -1,0 +1,52 @@
+---
+title: 'DATA 612: Discussion 1'
+author: "Albert Gilharry"
+date: "June 12, 2019"
+output: 
+  html_document:
+    css: ./css.css
+    highlight: pygments
+    theme: cerulean
+    pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Choose one commercial recommender and describe how you think it works (content-based, collaborative filtering, etc). Does the technique deliver a good experience or are the recommendations off-target?
+
+
+<div id = "solution">
+
+Strava is known as the premier social network for athletes. Strava has a very strong user base of millions of athletes at every level, primarily runners and cyclists. Users are able to track and post their workouts and races using GPS and other relevant devices such as heart rate monitors, cadence meters, power meters, etc. Users are able to compare their performance on a specific geographic route against athletes all over the world. While Strava has its native recommender systems to bring users together, I will be focusing on Strava Wind Analysis, a third-party Strava app that focuses on the impact of weather on cycling events and also recommends interesting segments to users. Segments are defined roughly as a polyline starting from one location and ending at another location with a predefined shape. This provides a fast way of showing relevant segments to the users when the entire globe may be of the interest.
+
+This recommender is a content-based system because the content is ranked based primarily on discrete characteristics. More recent rides are weighted more heavily than other factors such as KOM (Kong of the Mountain) achievement, leaderboard ranking, or whether or not the event was a personal best. The system does a pretty good job at recommending segments. A rider is likely to find segments that matches their abilities and interests in most cases. However, if you are a very strong rider that usually ride tough segments but you and are looking for an easy route to aid in active recovery, the system will likely recommend a tough route for you to try. The effect of this "error" is usually minimized by the fact in cycling you can usually control your exertion if the segment is not too difficult. Also cyclists love to suffer even when they don't want to suffer.
+
+</div>
+
+
+
+2. Read the article below and consider how to handle attacks on recommender systems. Can you think of a similar example where a collective effort to alter the workings of content recommendations have been successful? How would you design a system to prevent this kind of abuse?
+
+
+<div id = "solution">
+
+These sort of collabarative attacks on recommender systems are quite common on ecommerce systems such as Amazon and eBay where sellers incentivise users to give high ratings on their products with little or no regard to the actual product itself. These fake reviews are not effective indicators of the quality of the products they represent resulting in users being scammed out of their monies. 
+
+To aid in mitigating these attacks, users should be informed by these platforms to look beyond the ratings and read a healthy sample of the reviews to get a better idea of the quality of the product. Users should also look for baseless negative reviews. An example of this would be users that rate a product very low simply because it originated from China. Machine learning techniques such as natural langauge processing and other methods may be applied to filter out fake or useless reviews. I would also implement a functionality that weights ratings from established valid reviews higher than others and also present these first to users. The fight against these types of attacks are ongoing and requires constant monitoring and evaluation.
+
+</div>
+
+
+3. Sources
+
+<div id = "solution">
+
+https://www.strava.com/
+
+http://www.horatiulazu.ca/blog/programming/2018/11/09/strava.html
+
+https://thehustle.co/amazon-fake-reviews
+
+</div>
