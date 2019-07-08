@@ -1,0 +1,28 @@
+---
+title: "Discussion IV"
+author: "Albert Gilharry"
+date: "July 4, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The presentation of extreme content has proven to be a very successfull way of keeping users engaged. Whether or not major recommender platforms such as Google and Facebook are intentioinally exploiting this phenominon by increasingly presenting radical content or this is just a side effect due to natural algorithmic bias is up for debate. It is a general consensus that such recommender systems are too powerful because of their abilities to influence users and promote misinformation. It is frightening to think that these systems has the potential to swing a presidential election in the most powerful nation in the world and yet we are barely scratching the surface. There some steps that can be taken to reduce the influencial capacity of these systems without regulational interventions. Below are a few.
+
+**Present both sides**
+
+Censorship is a controversial issue that recommenders must always consider when implementing control measures in their systems. One way to reduce the censorship concerns of some users is to provide content on both ends of the polarization spectrum in an equal/simultaneous manner. If users do decide to go extreme, it will be mostly based on their own biases and not the  influence of the algorithms. For example, YouTube can provide content focused on both Clinton and Trump in the same listing for each set of recommendations if a user searches for either of them. If the user continously selects content from a single candidate then it is their own preference and not the exclusive behavior of the algorithm. Of course, this would not be very simple to implement because of the vast topics that has the potential to become polarizing.
+
+
+**Link to other information sources**
+
+The idea of YouTube providing links to Wikipedia to urge users to do some fact checking may seem a bit funny but the underlying idea can be very helpful if implemented properly. 
+Most people do not want to be decieved and would welcome the opportunity to seek the truth or find missing information if they have reason to believe that the information presented is not truthful or complete. It may be a bit difficult for the algorithms to say whether or not an article or video, or ad requires fact-checking. One approach may be to categorize content in areas such as Politics, International Relations, and Terrorism for which links to resources for fact-checking will almost always be provided. One issue to contend with is the fact that sites such as Wikipedia may not always be accurate or complete.
+
+
+**User defined profiles**
+
+Platforms such as Pinterest allows users to define their initial profiles at the begining by selecting categories they are interested in. This is ideal in the context of a cold start but these initial profiles become less weighted as time passes or if a user selects items that do not match his/her initial profile. Other recommenders may adopt this approach but improve on it by not learning from "curiousity clicks" or by weighting such events with low priority. If the user constantly selects items from a category that is not explicitly in her profile, the user should be presented with an option to include such content in their profile.
+
