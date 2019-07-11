@@ -1,0 +1,16 @@
+---
+title: 'Discussion III: Bias in Recommenders'
+author: "Albert Gilharry"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I believe recommender systems have the potential to reinforce human bias from an algorithmic and circumstantial point of view. The current state of affairs where there are simply too much content available for us humans to explore in detail within a reasonable time frame forces us to interact with recommenders on a daily basis. It is generally not worth it to spend a days searching through thousands of videos to eventually find one that will only take an hour to consume. These circumstances have led to the phenomenon whereby a recommendation system is our primary interface between user and interested content. These systems by design should only present us with content that we are likely to be interested in based on our history or the history of similar users. This fact alone means that there is great potential for our own personal biases to be reinforced. If your history shows that you love violent movies then you will be served violent movies. A recommender that diviates too much from this behavior may be deemed as a failure. Some may argue that recommenders that rely too much on these biases are towing the lines between ethical and unethical practices although it is not necessarily illegal.
+
+
+From an algorithmic perspective this reinforcement can be further magnified in situations where these algorithms are trained to identify and exploit these biases to keep users engaged as in the alleged case of YouTube (https://www.theguardian.com/technology/2018/feb/02/youtube-algorithm-election-clinton-trump-guillaume-chaslot). One of the major operations of recommendation systems is to calculate the similarity between users and items in order to find similar items to recommend to similar users. These similarities also hold the key to exploit biases. A recent case where this was allegedly done was in the case of Cambridge Analytica (https://www.theguardian.com/uk-news/2018/mar/23/leaked-cambridge-analyticas-blueprint-for-trump-victory) in which millions of user data was acquired from Facebook and similarity metrics were used identify users that could be influenced to vote for a particular candidate in the 2016 US Predential elections. These users were then presented with ads that were biased towards a particular candidate. Whether or not these events actually occurred, or the extent to which they occurred is not fully known but it shows the potential power of reinforcing human biases that recommender systems and their algorithms hold.
